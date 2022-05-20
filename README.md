@@ -1,7 +1,7 @@
 This Proof Of Concept demonstrates having two custome applications:
 
-- writer: writes to /tmp/data.txt (curl GET http://localhost:30001/write/{text-to-write})
-- reader: reads from /tmp/data.txt (curl GET http://localhost:30002/read)
+- writer: writes to /my-files/data.txt (curl GET http://localhost:30001/write/{text-to-write})
+- reader: reads from /my-files/data.txt (curl GET http://localhost:30002/read)
 
 # deployment.yaml
 

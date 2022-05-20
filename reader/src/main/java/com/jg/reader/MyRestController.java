@@ -19,7 +19,7 @@ public class MyRestController {
     @GetMapping("/read")
     public String readText() {
         log.info("Reading text from file.");
-        final File file = new File("/tmp/data.txt");
+        final File file = new File("/my-files/data.txt");
         return new String(Files.readAllBytes(file.toPath()));
     }
 

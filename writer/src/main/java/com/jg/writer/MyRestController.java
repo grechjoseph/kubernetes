@@ -17,7 +17,7 @@ public class MyRestController {
     @GetMapping("/write/{textToWrite}")
     public void writeText(@PathVariable(name = "textToWrite") final String textToWrite) {
         log.info("Writing text: {}", textToWrite);
-        final File file = new File("/tmp/data.txt");
+        final File file = new File("/my-files/data.txt");
         final PrintWriter writer = new PrintWriter(file);
         writer.print(textToWrite);
         writer.close();
