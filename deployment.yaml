@@ -1,0 +1,128 @@
+# StorageClass
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: my-storage-class
+provisioner: docker.io/hostpath
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+
+---
+
+# PersistentVolumeClaim
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-persistent-volume-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi
+  storageClassName: my-storage-class
+  volumeMode: Filesystem
+
+---
+
+# Writer
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-writer
+  labels:
+    app: writer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: writer
+  template:
+    metadata:
+      labels:
+        app: writer
+    spec:
+      volumes:
+        - name: reader-files
+          persistentVolumeClaim:
+            claimName: my-persistent-volume-claim
+      containers:
+        - name: writer
+          image: josephgrech90/writer
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: reader-files
+              mountPath: /tmp
+
+---
+
+# Reader
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-reader
+  labels:
+    app: reader
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reader
+  template:
+    metadata:
+      labels:
+        app: reader
+    spec:
+      volumes:
+        - name: reader-files
+          persistentVolumeClaim:
+            claimName: my-persistent-volume-claim
+      containers:
+        - name: reader
+          image: josephgrech90/reader
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: reader-files
+              mountPath: /tmp
+
+---
+
+# Writer Service
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: writer-entrypoint
+  namespace: default
+spec:
+  type: NodePort
+  selector:
+    app: writer
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30001
+
+---
+
+# Reader Service
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: reader-entrypoint
+  namespace: default
+spec:
+  type: NodePort
+  selector:
+    app: reader
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30002
