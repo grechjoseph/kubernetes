@@ -36,7 +36,7 @@ metadata:
   labels:
     app: writer
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: writer
@@ -69,7 +69,7 @@ metadata:
   labels:
     app: reader
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: reader
@@ -126,3 +126,33 @@ spec:
     - port: 8080
       targetPort: 8080
       nodePort: 30002
+
+---
+
+# Writer Headless Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: writer-headless-entrypoint
+spec:
+  clusterIP: None
+  selector:
+    app: writer
+  ports:
+    - port: 8080
+      targetPort: 8080
+
+---
+
+# Reader Headless Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: reader-headless-entrypoint
+spec:
+  clusterIP: None
+  selector:
+    app: reader
+  ports:
+    - port: 8080
+      targetPort: 8080
