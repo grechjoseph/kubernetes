@@ -138,6 +138,8 @@ spec:
   clusterIP: None
   selector:
     app: writer
+    # This is to a point to a specific pod of a StatefulSet
+    # statefulset.kubernetes.io/pod-name: ssh-server-{{ . }}
   ports:
     - port: 8080
       targetPort: 8080
