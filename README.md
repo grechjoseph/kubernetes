@@ -1,4 +1,4 @@
-This Proof Of Concept demonstrates having two custome applications:
+This Proof Of Concept demonstrates having two custom applications:
 
 - writer: writes to /my-files/data.txt (curl GET http://localhost:30001/write/{text-to-write})
 - reader: reads from /my-files/data.txt (curl GET http://localhost:30002/read)
